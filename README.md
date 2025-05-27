@@ -23,3 +23,4 @@ https://github.com/3ixi/autoscripts.git
 | [TCL+自动任务脚本](https://github.com/3ixi/autoscripts/blob/main/tcl.py)|小程序|TCL+|`0 4 * * *`|积分|抓包一次自动更新|
 | [TCL+自动兑换E卡脚本](https://github.com/3ixi/autoscripts/blob/main/tcl_ek.py)|小程序|TCL+|`58 9 * * *`|E卡|抓包一次自动更新|
 | [爱坤机场自动签到脚本](https://github.com/3ixi/autoscripts/blob/main/ikuuu.py)|网站|[爱坤机场](https://ikuuu.org "转到爱坤机场")|`0 1 * * *`|流量|每次运行自动获取|
+| [同程旅行自动任务脚本](https://github.com/3ixi/autoscripts/blob/main/tongcheng.py)|APP|同程旅行|`0 6 * * *`|里程|≥1个月|
