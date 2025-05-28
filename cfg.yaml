@@ -4,7 +4,15 @@ scripts:
   - name: 脚本2
     path: script2.py
 
+# 推送方式选择：wxpusher或pushplus
+push_method: pushplus
+
 wxpusher:
   apptoken: AT_xxxxxxxxxxxxxx
   uids: [UID_xxxxxxxxxxxxxxx]
-  topic_id: 
+  topic_id:
+
+pushplus:
+  token: xxxxxxxxxxxxxx
+  template: html
+  channel: wechat
