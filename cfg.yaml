@@ -1,0 +1,10 @@
+scripts:
+  - name: 脚本1
+    path: script1.py
+  - name: 脚本2
+    path: script2.py
+
+wxpusher:
+  apptoken: AT_xxxxxxxxxxxxxx
+  uids: [UID_xxxxxxxxxxxxxxx]
+  topic_id: 
