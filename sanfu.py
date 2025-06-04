@@ -69,7 +69,7 @@ def main():
                 print(f"账号{i+1}签到失败：{sign_data.get('msg', '未知错误')}")
                 continue
                 
-            print(f"完整响应数据: {sign_data}")
+            # print(f"完整响应数据: {sign_data}")
             
             # 获取签到返回数据
             onSign_fubi = sign_data.get('data', {}).get('fubi', 0)
