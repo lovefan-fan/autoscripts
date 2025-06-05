@@ -10,7 +10,7 @@ import requests
 更新日期：2025-05-28
 需要依赖：pyyaml
 描述: 需要在cfg.yaml配置好需要运行的脚本，cfg.yaml可在https://github.com/3ixi/autoscripts下载
-      支持wxpusher和pushplus两种推送方式，可在配置文件中配置
+      支持wxpusher、pushplus和custom三种推送方式，可在配置文件中配置
 """
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -24,6 +24,7 @@ scripts = config.get('scripts', [])
 push_method = config.get('push_method', 'wxpusher')
 wxpusher_config = config.get('wxpusher', {})
 pushplus_config = config.get('pushplus', {})
+custom_config = config.get('custom', {})
 
 def execute_script(script_name):
     try:
@@ -66,12 +67,38 @@ def send_pushplus_message(title, message):
     response = requests.post('http://www.pushplus.plus/send', json=payload)
     return response.json()
 
+# 推送信息到自定义接口
+def send_custom_message(title, message):
+    url = custom_config.get('url')
+    token = custom_config.get('token')
+    channel = custom_config.get('channel')
+    
+    if not all([url, token, channel]):
+        print("自定义推送配置不完整，请检查cfg.yaml中的custom配置")
+        return None
+    
+    payload = {
+        'title': title,
+        'description': message,
+        'token': token,
+        'channel': channel
+    }
+    
+    try:
+        response = requests.post(url, json=payload)
+        return response.json()
+    except Exception as e:
+        print(f"自定义推送失败: {str(e)}")
+        return None
+
 # 根据配置选择推送方式
 def send_message(title, message):
     if push_method == 'wxpusher':
         return send_wxpusher_message(title, message)
     elif push_method == 'pushplus':
         return send_pushplus_message(title, message)
+    elif push_method == 'custom':
+        return send_custom_message(title, message)
     else:
         print(f"未知的推送方式: {push_method}")
         return None

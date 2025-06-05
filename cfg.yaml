@@ -4,8 +4,8 @@ scripts:
   - name: 脚本2
     path: script2.py
 
-# 推送方式选择：wxpusher或pushplus
-push_method: pushplus
+# 推送方式选择：wxpusher、pushplus或custom
+push_method: custom
 
 wxpusher:
   apptoken: AT_xxxxxxxxxxxxxx
@@ -16,3 +16,8 @@ pushplus:
   token: xxxxxxxxxxxxxx
   template: html
   channel: wechat
+
+custom:
+  url: 
+  token: 
+  channel: 
