@@ -10,6 +10,7 @@ import requests
         变量名：sanfu
         变量格式：sid
         多账号之间用#分隔：sid1#sid2#sid3
+签到奖励：福币
 """
 
 def main():
@@ -89,11 +90,11 @@ def main():
             baseInfo_fubi = info_data.get('data', {}).get('fubi', 0)
             
             message = (
-                f"{curCusId}签到成功"
-                f"连续签到{onKeepSignDay}天"
-                f"获得{onSign_fubi}个福币"
-                f"再签{giftMoneyDaily}天可得神秘礼物"
-                f"当前账号有{baseInfo_fubi}个福币"
+                f"{curCusId}签到成功\n"
+                f"连续签到{onKeepSignDay}天\n"
+                f"获得{onSign_fubi}个福币\n"
+                f"再签{giftMoneyDaily}天可得神秘礼物🎁\n"
+                f"当前账号有{baseInfo_fubi}个福币\n"
             )
             print(message)
             
