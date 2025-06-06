@@ -1,11 +1,21 @@
 scripts:
-  - name: 脚本1
-    path: script1.py
-  - name: 脚本2
-    path: script2.py
+  - name: 海底捞签到
+    path: hdl_sign.py
+  - name: 成都天府绿道签到
+    path: tianfu_sign.py
+  - name: TCL+签到
+    path: tcl.py
+  - name: TCL+兑换E卡
+    path: tcl_ek.py
+  - name: 爱坤机场签到
+    path: ikuuu.py
+  - name: 同程旅行签到
+    path: tongcheng.py
+  - name: 三福签到
+    path: sanfu.py
 
-# 推送方式选择：wxpusher、pushplus或custom
-push_method: custom
+# 推送方式选择：wxpusher、pushplus、custom或wechat
+push_method: wechat
 
 wxpusher:
   apptoken: AT_xxxxxxxxxxxxxx
@@ -21,3 +31,8 @@ custom:
   url: 
   token: 
   channel: 
+
+wechat:
+  url: 
+  key: 
+  to_user: 

@@ -10,7 +10,7 @@ import requests
 更新日期：2025-05-28
 需要依赖：pyyaml
 描述: 需要在cfg.yaml配置好需要运行的脚本，cfg.yaml可在https://github.com/3ixi/autoscripts下载
-      支持wxpusher、pushplus和custom三种推送方式，可在配置文件中配置
+      支持wxpusher、pushplus、custom和wechat四种推送方式，可在配置文件中配置
 """
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -25,6 +25,7 @@ push_method = config.get('push_method', 'wxpusher')
 wxpusher_config = config.get('wxpusher', {})
 pushplus_config = config.get('pushplus', {})
 custom_config = config.get('custom', {})
+wechat_config = config.get('wechat', {})
 
 def execute_script(script_name):
     try:
@@ -91,6 +92,45 @@ def send_custom_message(title, message):
         print(f"自定义推送失败: {str(e)}")
         return None
 
+# 推送信息到微信
+def send_wechat_message(title, message):
+    url = wechat_config.get('url')
+    key = wechat_config.get('key')
+    to_user = wechat_config.get('to_user')
+    
+    if not all([url, key, to_user]):
+        print("微信推送配置不完整，请检查cfg.yaml中的wechat配置")
+        return None
+    
+    headers = {
+        'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,en-GB;q=0.6',
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/json',
+        'Origin': url.split('/docs')[0] if '/docs' in url else url,
+        'Referer': f"{url.split('/docs')[0]}/docs/" if '/docs' in url else url,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
+        'accept': 'application/json'
+    }
+    
+    payload = {
+        "MsgItem": [
+            {
+                "AtWxIDList": [],
+                "ImageContent": "",
+                "MsgType": 0,
+                "TextContent": f"{title}\n\n{message}",
+                "ToUserName": to_user
+            }
+        ]
+    }
+    
+    try:
+        response = requests.post(f"{url}?key={key}", headers=headers, json=payload, verify=False)
+        return response.json()
+    except Exception as e:
+        print(f"微信推送失败: {str(e)}")
+        return None
+
 # 根据配置选择推送方式
 def send_message(title, message):
     if push_method == 'wxpusher':
@@ -99,6 +139,8 @@ def send_message(title, message):
         return send_pushplus_message(title, message)
     elif push_method == 'custom':
         return send_custom_message(title, message)
+    elif push_method == 'wechat':
+        return send_wechat_message(title, message)
     else:
         print(f"未知的推送方式: {push_method}")
         return None
