@@ -100,7 +100,7 @@ def send_wechat_message(title, message):
     
     if not all([url, key, to_user]):
         print("微信推送配置不完整，请检查cfg.yaml中的wechat配置")
-        return None
+        return False
     
     headers = {
         'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7,en-GB;q=0.6',
@@ -125,25 +125,50 @@ def send_wechat_message(title, message):
     }
     
     try:
-        response = requests.post(f"{url}?key={key}", headers=headers, json=payload, verify=False)
-        return response.json()
+        # 设置超时时间为10秒
+        response = requests.post(
+            f"{url}?key={key}", 
+            headers=headers, 
+            json=payload, 
+            verify=False,
+            timeout=10
+        )
+        response.raise_for_status()  # 检查响应状态
+        result = response.json()
+        if result.get('code') == 0:  # 假设0是成功状态码
+            return True
+        else:
+            print(f"微信推送失败: {result.get('msg', '未知错误')}")
+            return False
+    except requests.exceptions.Timeout:
+        print("微信推送超时，请检查网络连接和服务器状态")
+        return False
+    except requests.exceptions.ConnectionError:
+        print("微信推送连接失败，请检查服务器地址是否正确")
+        return False
     except Exception as e:
         print(f"微信推送失败: {str(e)}")
-        return None
+        return False
 
 # 根据配置选择推送方式
 def send_message(title, message):
+    success = False
     if push_method == 'wxpusher':
-        return send_wxpusher_message(title, message)
+        result = send_wxpusher_message(title, message)
+        success = result is not None
     elif push_method == 'pushplus':
-        return send_pushplus_message(title, message)
+        result = send_pushplus_message(title, message)
+        success = result is not None
     elif push_method == 'custom':
-        return send_custom_message(title, message)
+        result = send_custom_message(title, message)
+        success = result is not None
     elif push_method == 'wechat':
-        return send_wechat_message(title, message)
+        success = send_wechat_message(title, message)
     else:
         print(f"未知的推送方式: {push_method}")
-        return None
+        return False
+    
+    return success
 
 all_outputs = []
 
@@ -159,5 +184,7 @@ for script in scripts:
     print("\n" + "-" * 50 + "\n")
 
 final_message = "\n".join(all_outputs)
-send_message("所有脚本执行结果", final_message)
-print(f"所有脚本执行完毕，已发送结果到 {push_method}。")
+if send_message("所有脚本执行结果", final_message):
+    print(f"所有脚本执行完毕，已发送结果到 {push_method}。")
+else:
+    print(f"所有脚本执行完毕，但推送失败，请检查推送配置。")
